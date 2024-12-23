@@ -5,7 +5,7 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const { Api } = require('telegram/tl');
 
-// 4. Access your values from the config object
+// Access your values from the config object
 const apiId = process.env.apiId;
 const apiHash = process.env.apiHash;
 
