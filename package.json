@@ -1,0 +1,15 @@
+{
+  "name": "remove-tg-messages-groups",
+  "version": "1.0.0",
+  "main": "cleanTelegram.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "input": "^1.0.1",
+    "telegram": "^2.26.8"
+  }
+}
