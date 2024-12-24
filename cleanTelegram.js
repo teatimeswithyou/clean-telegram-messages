@@ -155,6 +155,8 @@ const showMyMessageCount = async (client) => {
  * Delete all messages (owned by current user) in the specified group IDs
  */
 const deleteUserMessages = async (client, groupIds) => {
+  const me = await client.getMe();
+
   try {
     for (const id of groupIds) {
       console.log(`\nDeleting messages in chat ID: ${id}`);
