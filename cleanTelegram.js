@@ -5,9 +5,11 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const { Api } = require('telegram/tl');
 
+const config = require('dotenv').config().parsed
+
 // Access your values from the config object
-const apiId = process.env.apiId;
-const apiHash = process.env.apiHash;
+const apiId = config.API_ID
+const apiHash = config.API_HASH
 
 // Try to load an existing session from disk
 let sessionString = '';
@@ -166,8 +168,10 @@ const deleteUserMessages = async (client, groupIds) => {
         continue;
       }
 
-      const currentUser = await client.getMe();
-      const userId = currentUser.id;
+      const fromId = new Api.InputPeerUser({
+        userId: me.id,
+        accessHash: me.accessHash,
+      });
 
       const limit = 100; // number of messages to fetch per chunk
       let offsetId = 0;
@@ -178,7 +182,7 @@ const deleteUserMessages = async (client, groupIds) => {
         const search = await client.invoke(
           new Api.messages.Search({
             peer: chat,
-            fromId: userId,
+            fromId: fromId,
             ...defaultSearchOptions,
             limit, 
             offsetId,
