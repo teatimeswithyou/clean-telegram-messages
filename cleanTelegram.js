@@ -96,6 +96,8 @@ const showMyMessageCount = async (client) => {
     // 2) Fetch dialogs (chats, groups, channels, etc.)
     const dialogs = await client.getDialogs({});
 
+    // fs.writeFileSync('test', JSON.stringify(dialogs), 'utf8');
+
     console.log('Chats/Groups:');
     console.log('--------------------------------------------------------------');
     console.log('|  Chat ID      |  Title               |  My Messages Count |');
@@ -157,6 +159,11 @@ const showMyMessageCount = async (client) => {
 const deleteUserMessages = async (client, groupIds) => {
   const me = await client.getMe();
 
+  // sometimes telegram returns error when trying to getEntity of group
+  // if dialogs wasn't checked before accesss to channel
+  // RPCError: 400: CHANNEL_INVALID (caused by channels.GetChannels)
+  await client.getDialogs({});
+
   try {
     for (const id of groupIds) {
       console.log(`\nDeleting messages in chat ID: ${id}`);
@@ -169,11 +176,8 @@ const deleteUserMessages = async (client, groupIds) => {
         console.log(` - Skipping: Could not fetch entity for ID: ${id}`);
         continue;
       }
-
-      const fromId = new Api.InputPeerUser({
-        userId: me.id,
-        accessHash: me.accessHash,
-      });
+      const currentUser = await client.getMe();
+      const userId = currentUser.id;
 
       const limit = 100; // number of messages to fetch per chunk
       let offsetId = 0;
@@ -184,7 +188,7 @@ const deleteUserMessages = async (client, groupIds) => {
         const search = await client.invoke(
           new Api.messages.Search({
             peer: chat,
-            fromId: fromId,
+            fromId: userId,
             ...defaultSearchOptions,
             limit, 
             offsetId,
